@@ -79,6 +79,7 @@ namespace ForumTalks.Controllers
 
                 return Ok(new
                 {
+                    id = user.Id,
                     role = userRoles,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo

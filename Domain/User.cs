@@ -9,7 +9,7 @@ namespace Domain
 {
     public class User: IdentityUser
     {
-        public ICollection<Forum> Forums { get; set; }
+        public ICollection<UserForum> Forums { get; set; }
         public ICollection<Forum> OwnedForums { get; set; }
         public ICollection<Comment> Comments { get; set; }
     }

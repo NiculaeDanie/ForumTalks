@@ -8,6 +8,7 @@ namespace Domain
 {
     public class UserForum
     {
+        public string Id { get; set; }
         public string UserId { get; set; }
         public User user { get; set; }
         public string ForumId { get; set; }
