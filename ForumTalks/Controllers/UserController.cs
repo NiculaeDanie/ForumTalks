@@ -47,6 +47,28 @@ namespace ForumTalks.Controllers
             return BadRequest();
         }
 
+        [HttpGet]
+        [Route("username/{id}")]
+        public async Task<IActionResult> GetName(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                return Ok(new { name = user.UserName, description = user.Description });
+            }
+            return BadRequest();
+        }
+
+        [HttpGet]
+        [Route("{id}/{desc}")]
+        public async Task<IActionResult> UpdateDesc(string id, string desc)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            user.Description = desc;
+            await userManager.UpdateAsync(user);
+            return Ok();
+        }
+
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto model)
@@ -100,7 +122,8 @@ namespace ForumTalks.Controllers
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.FullName
+                UserName = model.FullName,
+                Description = "No description!"
             };
             var result = await userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)

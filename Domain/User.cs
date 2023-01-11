@@ -12,5 +12,7 @@ namespace Domain
         public ICollection<UserForum> Forums { get; set; }
         public ICollection<Forum> OwnedForums { get; set; }
         public ICollection<Comment> Comments { get; set; }
+        public ICollection<UserComment> LikedComments { get; set; }
+        public string Description { get; set; }
     }
 }

@@ -29,12 +29,12 @@ namespace Infrrastructure.Repository
 
         public async Task<ICollection<Comment>> getAll(string postId)
         {
-            return await _dataContext.Comment.Where(comment => comment.PostId == postId).ToListAsync();
+            return await _dataContext.Comment.Where(comment => comment.PostId == postId).Include(x=> x.LikedUsers).ToListAsync();
         }
 
         public async Task<Comment> getById(string Id)
         {
-            return await _dataContext.Comment.Where(comment => comment.Id == Id).FirstOrDefaultAsync();
+            return await _dataContext.Comment.Where(comment => comment.Id == Id).Include(x=> x.LikedUsers).FirstOrDefaultAsync();
         }
 
         public async Task update(Comment comment)

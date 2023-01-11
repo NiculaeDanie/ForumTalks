@@ -16,5 +16,7 @@ namespace Domain
         public Post Post { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
+        public bool IsLiked { get; set; }
+        public ICollection<UserComment> LikedUsers { get; set; }
     }
 }

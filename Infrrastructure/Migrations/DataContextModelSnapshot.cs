@@ -30,6 +30,9 @@ namespace Infrrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsLiked")
+                        .HasColumnType("bit");
+
                     b.Property<int>("LikeCount")
                         .HasColumnType("int");
 
@@ -127,6 +130,10 @@ namespace Infrrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -178,6 +185,27 @@ namespace Infrrastructure.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.UserComment", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CommentId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserComment");
                 });
 
             modelBuilder.Entity("Domain.UserForum", b =>
@@ -372,6 +400,23 @@ namespace Infrrastructure.Migrations
                     b.Navigation("Forum");
                 });
 
+            modelBuilder.Entity("Domain.UserComment", b =>
+                {
+                    b.HasOne("Domain.Comment", "Comment")
+                        .WithMany("LikedUsers")
+                        .HasForeignKey("CommentId");
+
+                    b.HasOne("Domain.User", "User")
+                        .WithMany("LikedComments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.UserForum", b =>
                 {
                     b.HasOne("Domain.Forum", "Forum")
@@ -442,6 +487,11 @@ namespace Infrrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Comment", b =>
+                {
+                    b.Navigation("LikedUsers");
+                });
+
             modelBuilder.Entity("Domain.Forum", b =>
                 {
                     b.Navigation("Post");
@@ -459,6 +509,8 @@ namespace Infrrastructure.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Forums");
+
+                    b.Navigation("LikedComments");
 
                     b.Navigation("OwnedForums");
                 });

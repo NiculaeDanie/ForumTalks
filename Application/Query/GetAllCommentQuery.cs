@@ -12,6 +12,7 @@ namespace Application.Query
     public class GetAllCommentQuery: IRequest<ICollection<Comment>>
     {
         public string PostId { get; set; }
+        public string UserId { get; set; }
     }
     public class GetAllCommentQueryHandler: IRequestHandler<GetAllCommentQuery, ICollection<Comment>>
     {
@@ -23,7 +24,19 @@ namespace Application.Query
 
         public async Task<ICollection<Comment>> Handle(GetAllCommentQuery request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.CommentRepository.getAll(request.PostId);
+            var result =  await _unitOfWork.CommentRepository.getAll(request.PostId);
+            foreach (var comment in result)
+            {
+                foreach(var user in comment.LikedUsers)
+                {
+                    if(user.UserId == request.UserId)
+                    {
+                        comment.IsLiked = true;
+                    }
+                    comment.LikedUsers = null;
+                }
+            }
+            return result;
         }
     }
 }

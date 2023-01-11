@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Command
 {
-    public class CreateForumCommand: IRequest
+    public class CreateForumCommand: IRequest<Forum>
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -17,7 +17,7 @@ namespace Application.Command
         public string OwnerId { get; set; }
     }
 
-    public class CreateForumCommandHandler: IRequestHandler<CreateForumCommand>
+    public class CreateForumCommandHandler: IRequestHandler<CreateForumCommand, Forum>
     {
         private readonly IUnitOfWork _unitOfWork;
         public CreateForumCommandHandler(IUnitOfWork unitOfWork)
@@ -25,7 +25,7 @@ namespace Application.Command
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Unit> Handle(CreateForumCommand request, CancellationToken cancellationToken)
+        public async Task<Forum> Handle(CreateForumCommand request, CancellationToken cancellationToken)
         {
             Forum forum = new Forum()
             {
@@ -37,7 +37,7 @@ namespace Application.Command
             };
             await _unitOfWork.ForumRepository.add(forum);
             await _unitOfWork.Save();
-            return new Unit();
+            return forum;
         }
     }
 }

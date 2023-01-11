@@ -2,6 +2,7 @@
 using Domain;
 using MediatR;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace Application.Command
 {
-    public class CreateCommentCommand: IRequest
+    public class CreateCommentCommand: IRequest<Comment>
     {
         public string Text { get; set; }
         public string PostId { get; set; }
         public string UserId { get; set; }
     }
-    public class CreateCommentCommandHandler: IRequestHandler<CreateCommentCommand>
+    public class CreateCommentCommandHandler: IRequestHandler<CreateCommentCommand, Comment>
     {
         private readonly IUnitOfWork _unitOfWork;
         public CreateCommentCommandHandler(IUnitOfWork unitOfWork)
@@ -23,7 +24,7 @@ namespace Application.Command
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Unit> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
+        public async Task<Comment> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
         {
             var comment = new Comment
             {
@@ -32,11 +33,12 @@ namespace Application.Command
                 LikeCount = 0,
                 PostId = request.PostId,
                 Date = DateTime.Now,
-                Text = request.Text
+                Text = request.Text,
+                IsLiked = false
             };
             await _unitOfWork.CommentRepository.add(comment);
             await _unitOfWork.Save();
-            return new Unit();
+            return comment;
         }
     }
 }
